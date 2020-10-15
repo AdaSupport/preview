@@ -1,0 +1,2 @@
+# Flag to enable Linkerd to add configuration snippets on ingress
+linkerd: "false"

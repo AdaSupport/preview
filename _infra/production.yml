@@ -5,3 +5,6 @@ include:
     values:
       env: production
       replicas: 3
+
+      # Flag to enable Linkerd to add configuration snippets on ingress
+      linkerd: "true"

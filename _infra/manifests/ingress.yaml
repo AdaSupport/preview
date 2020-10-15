@@ -4,32 +4,16 @@ kind: Ingress
 metadata:
   labels:
     k8s-hash: {{ gitHEAD }}
-  name: preview
-  annotations:
-    ingress.kubernetes.io/rewrite-target: "/"
-spec:
-  tls:
-    - secretName: ada-support-tls-secret
-      hosts:
-        - "previews.ada.support"
-  rules:
-    - host: "previews.ada.support"
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: preview
-              servicePort: 80
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  labels:
-    k8s-hash: {{ gitHEAD }}
   name: preview-v2
   annotations:
     kubernetes.io/ingress.class: "nginx-ingress-v2"
     nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      opentracing_tag "service.name" "nginx-$service_name";
+      {{- if (eq .linkerd "true") }}
+      proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+      grpc_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+      {{- end }}
 spec:
   tls:
     - secretName: ada-support-tls-secret
