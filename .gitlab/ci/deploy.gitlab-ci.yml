@@ -1,0 +1,51 @@
+.deploy_app_template:
+  extends: .deploy_template
+
+  script:
+    - deploy_preproduction
+
+deploy_production:
+  extends: .deploy_app_template
+  stage: deploy_production
+
+  script:
+    - deploy_production
+
+  # remove this when: manual for automatic deploys
+  when: manual
+  needs:
+    - build_aws_prod
+
+  environment:
+    name: "production"
+    url: "https://preview.ada.support"
+
+  tags:
+    - cluster.ada.support
+
+deploy_production_ca:
+  extends: deploy_production
+
+  environment:
+    name: "production_ca"
+    url: "https://preview.ca.ada.support"
+
+  tags:
+    - cluster.ca.ada.support
+    
+
+rollback_production:
+  extends: .deploy_app_template
+  stage: rollback_production
+
+  script:
+    - rollback_production
+
+  when: manual
+  tags:
+    - cluster.ada.support
+
+rollback_production_ca:
+  extends: rollback_production
+  tags:
+    - cluster.ca.ada.support

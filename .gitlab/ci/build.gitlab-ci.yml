@@ -1,0 +1,16 @@
+build_aws_prod:
+  extends: .build_kaniko_template
+  stage: build
+
+  # dont build on PRs unless we have PR specific pipelines
+  except:
+    - external_pull_requests
+
+  variables:
+    BUILD_CACHE: "false"
+    DOCKER_REPO_NAME: "preview"
+    CACHE_REPO_NAME: "preview/cache"
+
+  timeout: 1h
+  tags:
+    - cluster.ada-stage.support

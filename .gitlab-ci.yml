@@ -1,0 +1,19 @@
+variables:
+  ADA_CI_SCRIPTS_VERSION: &ADA_CI_SCRIPTS_VERSION "master"
+
+stages:
+  - build
+  - deploy_preproduction
+  - deploy_production
+  - rollback_preproduction
+  - rollback_production
+  - notifications
+
+include:
+  - project: "adasupport/k8s"
+    ref: *ADA_CI_SCRIPTS_VERSION
+    file: .gitlab/ci/global.gitlab-ci.yml
+
+  - local: .gitlab/ci/build.gitlab-ci.yml
+  - local: .gitlab/ci/deploy.gitlab-ci.yml
+  - local: .gitlab/ci/notifications.gitlab-ci.yml

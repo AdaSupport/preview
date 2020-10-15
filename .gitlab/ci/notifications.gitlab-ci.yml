@@ -1,0 +1,6 @@
+notify_slack_failure:
+  extends: .notify_slack_failure_template
+  stage: notifications
+
+  variables:
+    SLACK_CHANNEL: "#t-builder-tools"
